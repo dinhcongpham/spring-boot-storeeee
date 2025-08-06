@@ -1,6 +1,6 @@
 package com.jokerP.store.payments;
 
-import com.jokerP.store.entities.Order;
+import com.jokerP.store.orders.Order;
 
 import java.util.Optional;
 

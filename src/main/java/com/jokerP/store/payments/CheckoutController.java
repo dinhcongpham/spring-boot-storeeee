@@ -1,6 +1,6 @@
 package com.jokerP.store.payments;
 
-import com.jokerP.store.repositories.OrderRepository;
+import com.jokerP.store.orders.OrderRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

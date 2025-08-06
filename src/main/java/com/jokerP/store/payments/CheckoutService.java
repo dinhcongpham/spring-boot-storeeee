@@ -1,13 +1,13 @@
 package com.jokerP.store.payments;
 
 
-import com.jokerP.store.entities.Order;
-import com.jokerP.store.exceptions.BadRequestException;
-import com.jokerP.store.exceptions.NotFoundException;
-import com.jokerP.store.repositories.CartRepository;
-import com.jokerP.store.repositories.OrderRepository;
-import com.jokerP.store.services.AuthService;
-import com.jokerP.store.services.CartService;
+import com.jokerP.store.orders.Order;
+import com.jokerP.store.commons.BadRequestException;
+import com.jokerP.store.commons.NotFoundException;
+import com.jokerP.store.carts.CartRepository;
+import com.jokerP.store.orders.OrderRepository;
+import com.jokerP.store.auth.AuthService;
+import com.jokerP.store.carts.CartService;
 import com.jokerP.store.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

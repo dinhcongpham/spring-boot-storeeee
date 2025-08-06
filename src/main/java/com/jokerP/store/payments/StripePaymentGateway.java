@@ -1,8 +1,7 @@
 package com.jokerP.store.payments;
 
-import com.jokerP.store.entities.Order;
-import com.jokerP.store.entities.OrderItem;
-import com.jokerP.store.entities.PaymentStatus;
+import com.jokerP.store.orders.Order;
+import com.jokerP.store.orders.OrderItem;
 import com.jokerP.store.util.Constants;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
