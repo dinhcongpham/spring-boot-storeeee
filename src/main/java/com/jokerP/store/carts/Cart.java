@@ -3,6 +3,7 @@ package com.jokerP.store.carts;
 import com.jokerP.store.products.Product;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "carts")
 public class Cart {

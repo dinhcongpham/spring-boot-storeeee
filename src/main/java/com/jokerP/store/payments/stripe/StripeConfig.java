@@ -1,4 +1,4 @@
-package com.jokerP.store.payments;
+package com.jokerP.store.payments.stripe;
 
 import com.stripe.Stripe;
 import jakarta.annotation.PostConstruct;

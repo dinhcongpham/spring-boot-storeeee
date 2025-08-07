@@ -1,6 +1,9 @@
 package com.jokerP.store.payments;
 
 import com.jokerP.store.orders.OrderRepository;
+import com.jokerP.store.payments.dtos.CheckoutRequest;
+import com.jokerP.store.payments.dtos.CheckoutResponse;
+import com.jokerP.store.payments.dtos.WebhookRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

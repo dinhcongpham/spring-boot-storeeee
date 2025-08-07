@@ -1,7 +1,6 @@
 package com.jokerP.store.products;
 
 import com.jokerP.store.commons.NotFoundException;
-import com.jokerP.store.carts.ProductDto;
 import com.jokerP.store.util.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,19 +21,16 @@ public class ProductService {
     }
 
     public ProductDto getProductById(Long id) {
-        var product = productRepository.findById(id).orElse(null);
-        if (product == null) {
-            throw new NotFoundException(Constants.Message.PRODUCT_NOT_FOUND);
-        }
-
+        var product = handleGetProduct(id);
         return productMapper.toDto(product);
     }
 
+
+
     public ProductDto createProduct(ProductDto productDto) {
-        var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
-        if (category == null) {
-            throw new NotFoundException(Constants.Message.CATEGORY_NOT_FOUND);
-        }
+        categoryRepository.findById(productDto.getCategoryId()).orElseThrow(
+                () -> new NotFoundException(Constants.Message.CATEGORY_NOT_FOUND)
+        );
 
         var product = productMapper.toEntity(productDto);
         productRepository.save(product);
@@ -44,15 +40,11 @@ public class ProductService {
     }
 
     public ProductDto updateProduct(Long id, ProductDto productDto) {
-        var category = categoryRepository.findById(productDto.getCategoryId()).orElse(null);
-        if (category == null) {
-            throw new NotFoundException(Constants.Message.CATEGORY_NOT_FOUND);
-        }
+        categoryRepository.findById(productDto.getCategoryId()).orElseThrow(
+                () -> new NotFoundException(Constants.Message.CATEGORY_NOT_FOUND)
+        );
 
-        var product = productRepository.findById(id).orElse(null);
-        if (product == null) {
-            throw new NotFoundException(Constants.Message.PRODUCT_NOT_FOUND);
-        }
+        var product = handleGetProduct(id);
 
         productMapper.update(productDto, product);
         productRepository.save(product);
@@ -62,11 +54,13 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
-        var product = productRepository.findById(id).orElse(null);
-        if (product == null) {
-            throw new NotFoundException(Constants.Message.PRODUCT_NOT_FOUND);
-        }
-
+        var product = handleGetProduct(id);
         productRepository.delete(product);
+    }
+
+    private Product handleGetProduct(Long id) {
+        return productRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(Constants.Message.PRODUCT_NOT_FOUND)
+        );
     }
 }

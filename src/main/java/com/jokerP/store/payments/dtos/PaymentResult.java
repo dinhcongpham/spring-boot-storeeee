@@ -1,5 +1,6 @@
-package com.jokerP.store.payments;
+package com.jokerP.store.payments.dtos;
 
+import com.jokerP.store.payments.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

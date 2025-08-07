@@ -30,11 +30,7 @@ public class UserService {
     }
 
     public UserDto getUserById(Long id) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new NotFoundException(Constants.Message.USER_NOT_FOUND);
-        }
-
+        var user = handleGetUser(id);
         return userMapper.toDto(user);
     }
 
@@ -46,14 +42,12 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
         userRepository.save(user);
+
         return userMapper.toDto(user);
     }
 
     public UserDto updateUser(Long id, UpdateUserRequest request) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new NotFoundException(Constants.Message.USER_NOT_FOUND);
-        }
+        var user = handleGetUser(id);
 
         userMapper.update(request, user);
         userRepository.save(user);
@@ -61,24 +55,24 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw new NotFoundException(Constants.Message.USER_NOT_FOUND);
-        }
-
+        var user = handleGetUser(id);
         userRepository.delete(user);
     }
 
     public void changePassword(Long id, ChangePasswordRequest request) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user == null) {
-            throw  new NotFoundException(Constants.Message.USER_NOT_FOUND);
-        }
+        var user = handleGetUser(id);
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new BadRequestException(Constants.Message.PASSWORD_DOES_NOT_MATCH);
         }
 
         user.setPassword(request.getNewPassword());
         userRepository.save(user);
+    }
+
+    private User handleGetUser(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(Constants.Message.USER_NOT_FOUND)
+        );
     }
 }

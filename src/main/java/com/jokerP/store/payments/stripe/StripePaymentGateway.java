@@ -1,7 +1,11 @@
-package com.jokerP.store.payments;
+package com.jokerP.store.payments.stripe;
 
 import com.jokerP.store.orders.Order;
 import com.jokerP.store.orders.OrderItem;
+import com.jokerP.store.payments.*;
+import com.jokerP.store.payments.dtos.CheckoutSession;
+import com.jokerP.store.payments.dtos.PaymentResult;
+import com.jokerP.store.payments.dtos.WebhookRequest;
 import com.jokerP.store.util.Constants;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;

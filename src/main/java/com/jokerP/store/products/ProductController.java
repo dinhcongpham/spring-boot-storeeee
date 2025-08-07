@@ -1,7 +1,6 @@
 package com.jokerP.store.products;
 
 
-import com.jokerP.store.carts.ProductDto;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +10,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-    private ProductRepository productRepository;
-    private CategoryRepository categoryRepository;
-    private ProductMapper productMapper;
     private ProductService productService;
 
     @GetMapping
@@ -31,21 +27,21 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(
-            @RequestBody ProductDto productDto,
+            @RequestBody ProductDto requestProductDto,
             UriComponentsBuilder uriComponentsBuilder
     ) {
-        var newProduct = productService.createProduct(productDto);
+        var productDto = productService.createProduct(requestProductDto);
 
-        var uri =  uriComponentsBuilder.path("/products/{id}").buildAndExpand(newProduct.getId()).toUri();
-        return ResponseEntity.created(uri).body(newProduct);
+        var uri =  uriComponentsBuilder.path("/products/{id}").buildAndExpand(productDto.getId()).toUri();
+        return ResponseEntity.created(uri).body(productDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductDto> updateProduct(
             @PathVariable Long id,
-            @RequestBody ProductDto productDto
+            @RequestBody ProductDto requestProductDto
     ) {
-        var updatedProduct = productService.updateProduct(id, productDto);
+        var updatedProduct = productService.updateProduct(id, requestProductDto);
         return ResponseEntity.ok(updatedProduct);
     }
 

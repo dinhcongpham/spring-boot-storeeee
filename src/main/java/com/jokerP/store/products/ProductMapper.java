@@ -1,6 +1,5 @@
 package com.jokerP.store.products;
 
-import com.jokerP.store.carts.ProductDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

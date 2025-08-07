@@ -1,4 +1,4 @@
-package com.jokerP.store.carts;
+package com.jokerP.store.products;
 
 
 import lombok.AllArgsConstructor;

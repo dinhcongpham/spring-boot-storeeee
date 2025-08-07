@@ -8,6 +8,9 @@ import com.jokerP.store.carts.CartRepository;
 import com.jokerP.store.orders.OrderRepository;
 import com.jokerP.store.auth.AuthService;
 import com.jokerP.store.carts.CartService;
+import com.jokerP.store.payments.dtos.CheckoutRequest;
+import com.jokerP.store.payments.dtos.CheckoutResponse;
+import com.jokerP.store.payments.dtos.WebhookRequest;
 import com.jokerP.store.util.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,8 +23,7 @@ public class CheckoutService {
     private final OrderRepository orderRepository;
     private final CartService cartService;
     private final AuthService authService;
-    private final PaymentGateway paymentGateway;
-
+    private final PaymentGatewayFactory gatewayFactory;
 
     @Transactional
     public CheckoutResponse checkout(CheckoutRequest checkoutRequest) {
@@ -39,18 +41,20 @@ public class CheckoutService {
         orderRepository.save(order);
 
         try {
-            var session = paymentGateway.createCheckoutSession(order);
+            var gateway = gatewayFactory.get(checkoutRequest.getProvider());
+            var session = gateway.createCheckoutSession(order);
             cartService.clearCart(cart.getId());
 
             return new CheckoutResponse(order.getId(), session.getCheckoutUrl());
-        } catch (PaymentException e) {
+        } catch (PaymentException e) {  
             orderRepository.delete(order);
             throw e;
         }
     }
 
     public void handleWebhookEvent(WebhookRequest request) {
-        paymentGateway
+        PaymentGateway gateway = gatewayFactory.get(PaymentProvider.STRIPE);
+        gateway
             .parseWebhookRequest(request)
             .ifPresent(paymentResult -> {
                 var order = orderRepository.findById(paymentResult.getOrderId()).orElseThrow();

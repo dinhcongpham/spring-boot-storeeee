@@ -6,8 +6,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "addresses")
 public class Address {
@@ -30,6 +30,5 @@ public class Address {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @ToString.Exclude
     private User user;
 }

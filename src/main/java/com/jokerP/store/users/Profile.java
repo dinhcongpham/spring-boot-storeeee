@@ -8,8 +8,8 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "profiles")
 public class Profile {

@@ -1,13 +1,16 @@
 package com.jokerP.store.auth;
 
 
+import com.jokerP.store.commons.NotFoundException;
 import com.jokerP.store.users.UserDto;
 import com.jokerP.store.users.UserMapper;
 import com.jokerP.store.users.UserRepository;
+import com.jokerP.store.util.Constants;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthController {
     private final UserMapper userMapper;
     private final UserRepository userRepository;
@@ -38,18 +41,16 @@ public class AuthController {
         );
 
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        var accessToken = jwtService.generateAccessToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
 
-        var cookie = new Cookie("refreshToken", refreshToken.toString());
-        cookie.setHttpOnly(true);
-        cookie.setPath("/auth/refresh");
-        cookie.setMaxAge(jwtConfig.getRefreshTokenExpiration()); //7d
-        cookie.setSecure(true);
-
+        var cookie = authService.createCookie(
+                "refreshToken",
+                jwtService.generateRefreshToken(user).toString(),
+                "/auth/refresh",
+                jwtConfig.getRefreshTokenExpiration()
+        );
         response.addCookie(cookie);
 
-        return  ResponseEntity.ok(new JwtResponse(accessToken.toString()));
+        return  ResponseEntity.ok(new JwtResponse(jwtService.generateAccessToken(user).toString()));
     }
 
     @PostMapping("/refresh")
@@ -62,21 +63,17 @@ public class AuthController {
         }
 
         var userId = jwt.getUserId();
-        var user = userRepository.findById(userId).orElseThrow();
-        var accessToken = jwtService.generateAccessToken(user);
+        var user = userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundException(Constants.Message.USER_NOT_FOUND)
+        );
 
+        var accessToken = jwtService.generateAccessToken(user);
         return   ResponseEntity.ok(new JwtResponse(accessToken.toString()));
     }
 
     @GetMapping("/me")
     public ResponseEntity<UserDto> getCurrentUser() {
         var user = authService.getCurrentUser();
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        var userDto = userMapper.toDto(user);
-
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity.ok(userMapper.toDto(user));
     }
 }
